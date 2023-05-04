@@ -27,31 +27,32 @@ namespace ApiUploadFiles.Controllers
                 var errorsUpload = new Dictionary<string, string>();
                 var allowedExtensions = new[] { ".pdf", ".jpg", ".jpeg", ".gif", ".png" };
 
-                if (files != null && files.Count > 0)
+                if (files is null || files.Count == 0)
+                    return (BadRequest("Nenhum arquivo selecionado"));
+
+                foreach (var file in files)
                 {
-                    foreach (var file in files)
+                    if (file.Length == 0)
                     {
-                        if (file.Length == 0)
-                        {
-                            errorsUpload.Add(file.FileName, "O arquivo está vazio ou é inválido.");
-                            continue;
-                        }
-
-                        if (file.Length > 5000000)
-                        {
-                            errorsUpload.Add(file.FileName, "O tamanho do arquivo excede o limite máximo permitido.");
-                            continue;
-                        }
-
-                        if (!allowedExtensions.Contains(Path.GetExtension(file.FileName).ToLower()))
-                        {
-                            errorsUpload.Add(file.FileName, $"O tipo de arquivo não é suportado. Arquivos suportados ( {String.Join(", ", allowedExtensions)} ).");
-                            continue;
-                        }
-
-                        await _fileApplication.CopyToFolderClienteAsync(file, clienteId);
+                        errorsUpload.Add(file.FileName, "O arquivo está vazio ou é inválido.");
+                        continue;
                     }
+
+                    if (file.Length > 5000000)
+                    {
+                        errorsUpload.Add(file.FileName, "O tamanho do arquivo excede o limite máximo permitido.");
+                        continue;
+                    }
+
+                    if (!allowedExtensions.Contains(Path.GetExtension(file.FileName).ToLower()))
+                    {
+                        errorsUpload.Add(file.FileName, $"O tipo de arquivo não é suportado. Arquivos suportados ( {String.Join(", ", allowedExtensions)} ).");
+                        continue;
+                    }
+
+                    await _fileApplication.CopyToFolderClienteAsync(file, clienteId);
                 }
+
 
                 if (errorsUpload.Count > 0)
                     return(BadRequest(errorsUpload));
@@ -75,31 +76,32 @@ namespace ApiUploadFiles.Controllers
                 var errorsUpload = new Dictionary<string, string>();
                 var allowedExtensions = new[] { ".pdf", ".jpg", ".jpeg", ".gif", ".png" };
 
-                if (files != null && files.Count > 0)
+                if (files is null || files.Count == 0)
+                    return (BadRequest("Nenhum arquivo selecionado"));
+
+                foreach (var file in files)
                 {
-                    foreach (var file in files)
+                    if (file.Length == 0)
                     {
-                        if (file.Length == 0)
-                        {
-                            errorsUpload.Add(file.FileName, "O arquivo está vazio ou é inválido.");
-                            continue;
-                        }
-
-                        if (file.Length > 5000000)
-                        {
-                            errorsUpload.Add(file.FileName, "O tamanho do arquivo excede o limite máximo permitido.");
-                            continue;
-                        }
-
-                        if (!allowedExtensions.Contains(Path.GetExtension(file.FileName).ToLower()))
-                        {
-                            errorsUpload.Add(file.FileName, $"O tipo de arquivo não é suportado. Arquivos suportados ( {String.Join(", ", allowedExtensions)} ).");
-                            continue;
-                        }
-
-                        await _fileApplication.CopyToFolderSedexAsync(file, sedexId);
+                        errorsUpload.Add(file.FileName, "O arquivo está vazio ou é inválido.");
+                        continue;
                     }
+
+                    if (file.Length > 5000000)
+                    {
+                        errorsUpload.Add(file.FileName, "O tamanho do arquivo excede o limite máximo permitido.");
+                        continue;
+                    }
+
+                    if (!allowedExtensions.Contains(Path.GetExtension(file.FileName).ToLower()))
+                    {
+                        errorsUpload.Add(file.FileName, $"O tipo de arquivo não é suportado. Arquivos suportados ( {String.Join(", ", allowedExtensions)} ).");
+                        continue;
+                    }
+
+                    await _fileApplication.CopyToFolderSedexAsync(file, sedexId);
                 }
+
 
                 if (errorsUpload.Count > 0)
                     return (BadRequest(errorsUpload));
